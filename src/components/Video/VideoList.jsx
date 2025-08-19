@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { formatTimestamp, formatVideoDuration } from "../../helpers/formatFigures";
 import { Link, useNavigate } from "react-router-dom";
 import { icons } from "../../assets/icons";
@@ -11,7 +12,7 @@ function VideoView({ videos = [], loading = true, fetching = false }) {
       <section className="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
         <div className="grid gap-6 p-4">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="animate-pulse w-full max-w-3xl gap-x-4 md:flex">
+            <div key={`skeleton-${index}`} className="animate-pulse w-full max-w-3xl gap-x-4 md:flex">
               <div className="relative mb-2 w-full md:mb-0 md:w-5/12">
                 <div className="w-full pt-[56%]">
                   <div className="absolute inset-0 rounded-xl bg-gray-200 dark:bg-gray-700" />
@@ -48,16 +49,17 @@ function VideoView({ videos = [], loading = true, fetching = false }) {
               key={video._id} 
               className="w-full rounded-xl transition-all hover:bg-gray-100 dark:hover:bg-gray-800/50"
             >
-              <Link to={`/watch/${video._id}`} className="block">
+              <Link to={`/watch/${video._id}`} className="block p-2 hover:no-underline">
                 <div className="w-full max-w-3xl gap-x-4 md:flex lg:max-w-4xl">
                   {/* Thumbnail */}
                   <div className="relative mb-2 w-full md:mb-0 md:w-5/12">
                     <div className="w-full pt-[56%]">
-                      <div className="absolute inset-0 overflow-hidden rounded-xl">
+                      <div className="absolute inset-0 overflow-hidden rounded-xl group">
                         <img 
                           src={video.thumbnail} 
                           alt={video.title}
-                          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
                         />
                         <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-xs text-white">
                           {formatVideoDuration(video.duration)}
@@ -75,18 +77,19 @@ function VideoView({ videos = [], loading = true, fetching = false }) {
                           e.preventDefault();
                           navigate(`/user/${video.owner?.username}`);
                         }}
-                        className="h-full w-full"
+                        className="h-full w-full hover:opacity-80 transition-opacity"
                       >
                         <img
                           src={video.owner?.avatar}
                           alt={video.owner?.username}
                           className="h-full w-full rounded-full object-cover"
+                          loading="lazy"
                         />
                       </button>
                     </div>
                     
                     <div className="w-full">
-                      <h3 className="mb-1 line-clamp-2 font-medium text-gray-900 dark:text-white">
+                      <h3 className="mb-1 line-clamp-2 font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
                         {video.title}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -101,16 +104,17 @@ function VideoView({ videos = [], loading = true, fetching = false }) {
                               e.preventDefault();
                               navigate(`/user/${video.owner?.username}`);
                             }}
-                            className="h-full w-full"
+                            className="h-full w-full hover:opacity-80 transition-opacity"
                           >
                             <img
                               src={video.owner?.avatar}
                               alt={video.owner?.username}
                               className="h-full w-full rounded-full object-cover"
+                              loading="lazy"
                             />
                           </button>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
                           {video.owner?.fullName}
                         </p>
                       </div>
@@ -126,7 +130,7 @@ function VideoView({ videos = [], loading = true, fetching = false }) {
           ))
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="mb-4 text-gray-400 dark:text-gray-500">
+            <div className="mb-4 text-gray-400 dark:text-gray-500 text-5xl">
               {icons.video}
             </div>
             <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
@@ -148,5 +152,26 @@ function VideoView({ videos = [], loading = true, fetching = false }) {
     </section>
   );
 }
+
+VideoView.propTypes = {
+  videos: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      thumbnail: PropTypes.string.isRequired,
+      duration: PropTypes.number.isRequired,
+      views: PropTypes.number.isRequired,
+      createdAt: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      owner: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        avatar: PropTypes.string.isRequired,
+        fullName: PropTypes.string.isRequired,
+      }).isRequired,
+    })
+  ),
+  loading: PropTypes.bool,
+  fetching: PropTypes.bool,
+};
 
 export default VideoView;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { VideoGrid } from "../components/index";
 import { emptyPagingVideosData, getAllVideosByOption } from "../app/Slices/paginationSlice";
 
-function FeedVideos({gridClassName, itemClassName}) {
+function FeedVideos({ gridClassName, itemClassName }) {
   const dispatch = useDispatch();
 
   const { loading } = useSelector(({ pagingVideos }) => pagingVideos);
@@ -36,10 +36,12 @@ function FeedVideos({gridClassName, itemClassName}) {
       fetchAllVideosPromise.abort();
       sectionRef.current?.scrollTo({ top: 0, behavior: "smooth" });
     };
-  }, []); // [dispatch, location.pathname]
+  }, [dispatch]);
 
   const handleScroll = () => {
     const section = sectionRef.current;
+    if (!section) return;
+
     const scrollHeight = section.scrollHeight;
     const scrolledValue = section.clientHeight + section.scrollTop;
 

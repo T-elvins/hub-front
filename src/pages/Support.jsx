@@ -26,10 +26,10 @@ function Support() {
             <div>
               <h3 className="font-medium dark:text-white">Email Support</h3>
               <a 
-                href="mailto:support@hub-community.com" 
+                href="mailto:dianarichwanamnii@gmail.com" 
                 className="text-sm dark:text-gray-300 text-gray-600 hover:underline"
               >
-                support@hub-community.com
+                dianarichwanamnii@gmail.com
               </a>
             </div>
           </div>

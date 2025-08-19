@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3000", // 👈 your local backend
+        target: "https://fly.io/apps/back-rough-dream-3049", // 👈 your local backend
         changeOrigin: true,
         secure: false,
       },

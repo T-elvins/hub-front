@@ -1,11 +1,9 @@
-import React from "react";
-import { useState } from "react";
-import { Link, NavLink, Outlet, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, useParams, Outlet, NavLink } from "react-router-dom";
 import { channelProfile } from "../app/Slices/userSlice";
 import { ChannelProfileAtom } from "../components/index";
+import PropTypes from "prop-types";
 
 function Channel({ owner = false }) {
   const [profile, setProfile] = useState(null);
@@ -20,14 +18,14 @@ function Channel({ owner = false }) {
     dispatch(channelProfile(username)).then((res) => {
       setProfile(res.payload);
     });
-  }, [username, loggedInUsername]);
+  }, [username, loggedInUsername, navigate, dispatch, owner]);
 
   const tabList = [
-    { name: "Videos", route: "" },
-    { name: "Playlists", route: "playlists" },
-    { name: "Tweets", route: "tweets" },
-    { name: "Subscribed", route: "subscribed" },
-    { name: "About", route: "about" },
+    { id: 1, name: "Videos", route: "" },
+    { id: 2, name: "Playlists", route: "playlists" },
+    { id: 3, name: "Tweets", route: "tweets" },
+    { id: 4, name: "Subscribed", route: "subscribed" },
+    { id: 5, name: "About", route: "about" },
   ];
 
   return profile ? (
@@ -45,19 +43,19 @@ function Channel({ owner = false }) {
         {/* Tab List */}
         <ul className="no-scrollbar sticky top-[66px] z-[2] flex flex-row gap-x-2 overflow-auto border-b-2 border-gray-400 drop-shadow dark:bg-[#121212] bg-[#fff7f7ef] py-2 sm:top-[82px]">
           {tabList?.map((item) => (
-            <li className="w-full">
+            <li key={item.id} className="w-full">
               <NavLink
                 to={item.route}
                 end
                 className={({ isActive }) =>
                   `${
                     isActive
-                      ? " dark:bg-white/90 bg-red-500 dark:border-[#ae7aff] border-red-800 border-2 dark:text-black text-white  rounded"
+                      ? " dark:bg-white/90 bg-red-500 dark:border-[#ae7aff] border-red-800 border-2 dark:text-black text-white rounded"
                       : "dark:text-[#ae7aff] text-zinc-500 "
-                  } w-full text-center flex justify-center border-b-2  px-3 py-1.5`
+                  } w-full text-center flex justify-center border-b-2 px-3 py-1.5`
                 }
               >
-                <span className=" inline-block mx-auto ">{item.name}</span>
+                <span className="inline-block mx-auto">{item.name}</span>
               </NavLink>
             </li>
           ))}
@@ -90,21 +88,11 @@ function Channel({ owner = false }) {
 
         {/* List Options Skeleton */}
         <ul className="no-scrollbar sticky top-[66px] z-[2] flex flex-row gap-x-2 overflow-auto border-b-2 border-gray-400 bg-[#121212] py-2 sm:top-[82px]">
-          <li className="w-full">
-            <div className="h-10 w-full dark:bg-slate-100/10 bg-zinc-300 rounded animate-pulse"></div>
-          </li>
-          <li className="w-full">
-            <div className="h-10 w-full dark:bg-slate-100/10 bg-zinc-300 rounded animate-pulse"></div>
-          </li>
-          <li className="w-full">
-            <div className="h-10 w-full dark:bg-slate-100/10 bg-zinc-300 rounded animate-pulse"></div>
-          </li>
-          <li className="w-full">
-            <div className="h-10 w-full dark:bg-slate-100/10 bg-zinc-300 rounded animate-pulse"></div>
-          </li>
-          <li className="w-full">
-            <div className="h-10 w-full dark:bg-slate-100/10 bg-zinc-300 rounded animate-pulse"></div>
-          </li>
+          {tabList.map((item) => (
+            <li key={`skeleton-${item.id}`} className="w-full">
+              <div className="h-10 w-full dark:bg-slate-100/10 bg-zinc-300 rounded animate-pulse"></div>
+            </li>
+          ))}
         </ul>
 
         {/* Outlet Skeleton */}
@@ -113,5 +101,9 @@ function Channel({ owner = false }) {
     </section>
   );
 }
+
+Channel.propTypes = {
+  owner: PropTypes.bool,
+};
 
 export default Channel;
